@@ -3,7 +3,7 @@ Memcached Docker Image
 
 This repository contains Dockerfile to run Memcached on AusNimbus (OpenShift v3).
 
-Current memcached version is 1.4.30
+Current memcached version is 1.4.35
 
 Configuring
 -----------

@@ -2,8 +2,8 @@ FROM  openshift/base-centos7
 
 MAINTAINER AusNimbus <support@ausnimbus.com.au>
 
-ENV MEMCACHED_VERSION 1.4.30
-ENV MEMCACHED_SHA1 bb8644a4110932e331d1539f0435bc6a0e558827
+ENV MEMCACHED_VERSION 1.4.35
+ENV MEMCACHED_SHA1 787991c0df75defbb91518c9796f8244852a018a
 
 LABEL io.k8s.description="Memcached is a general-purpose distributed memory caching system." \
       io.k8s.display-name="Memcached 1.4" \
