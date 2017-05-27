@@ -1,0 +1,12 @@
+#!/bin/bash
+
+NAME="memcached"
+DISPLAY_NAME="Memcached"
+REPO="ausnimbus/memcached"
+TEMPLATES="pre,component,template,post"
+VARIANT="alpine"
+VERSIONS="1.4"
+
+DOCKER_PUSH=${DOCKER_PUSH:-"false"}
+
+source $(readlink -zf $(dirname "${BASH_SOURCE[0]}"))/../common/hack/run

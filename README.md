@@ -1,29 +1,20 @@
-Memcached Docker Image
-======================
+# AusNimbus Memcached
 
-This repository contains Dockerfile to run Memcached on AusNimbus (OpenShift v3).
+[![Build Status](https://travis-ci.org/ausnimbus/memcached-container.svg?branch=master)](https://travis-ci.org/ausnimbus/memcached-container)
+[![Docker Repository on Quay](https://quay.io/repository/ausnimbus/memcached/status "Docker Repository on Quay")](https://quay.io/repository/ausnimbus/memcached)
 
-Current memcached version is 1.4.35
+This repository contains the source for deploying [memcached](https://www.ausnimbus.com.au/instant-apps/memcached/)
+on [AusNimbus](https://www.ausnimbus.com.au/).
 
-Configuring
------------
+## Environment Variables
 
 The following environment variables are available to configure your memcached instance:
 
-* MEMCACHED_MAX_MEMORY: Max memory to use for items in megabytes
-* MEMCACHED_MAX_CONNECTIONS: Max simultaneous connections
-* MEMCACHED_EXTRA_PARAMETERS: Extra command line parameters to pass to command `memcached`
+- MEMCACHED_MAXMEMORY: Max memory memcached can use (default: automatically configured)
+- MEMCACHED_EXTRA_OPTIONS: Extra parameters to passed to `memcached`
 
-Running Locally
----------------
+## Versions
 
-To build and run locally, execute:
+The versions currently supported are:
 
-    git clone https://github.com/ausnimbus/memcached.git
-    docker build -t memcached:ausnimbus .
-    docker run -d memcached:ausnimbus
-
-Credits
----------------
-
-[GetupCloud](https://getupcloud.com/) who originally created this (<https://github.com/getupcloud/memcached>)
+- 1.4
