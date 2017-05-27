@@ -1,0 +1,2 @@
+LABEL io.openshift.expose-services="11211:tcp" \
+    io.openshift.tags="component,%NAME%"
