@@ -2,8 +2,7 @@
 
 NAME="memcached"
 DISPLAY_NAME="Memcached"
-REPO="ausnimbus/memcached"
-TEMPLATES="pre,component,template,post"
+TYPE="component"
 VARIANT="alpine"
 VERSIONS="1.4"
 
