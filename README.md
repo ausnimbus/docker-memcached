@@ -1,7 +1,7 @@
 # AusNimbus Memcached
 
-[![Build Status](https://travis-ci.org/ausnimbus/memcached-container.svg?branch=master)](https://travis-ci.org/ausnimbus/memcached-container)
-[![Docker Repository on Quay](https://quay.io/repository/ausnimbus/memcached/status "Docker Repository on Quay")](https://quay.io/repository/ausnimbus/memcached)
+[![Build Status](https://travis-ci.org/ausnimbus/memcached-component.svg?branch=master)](https://travis-ci.org/ausnimbus/memcached-component)
+[![Docker Repository on Quay](https://quay.io/repository/ausnimbus/memcached-component/status "Docker Repository on Quay")](https://quay.io/repository/ausnimbus/memcached-component)
 
 This repository contains the source for deploying [memcached](https://www.ausnimbus.com.au/instant-apps/memcached/)
 on [AusNimbus](https://www.ausnimbus.com.au/).
