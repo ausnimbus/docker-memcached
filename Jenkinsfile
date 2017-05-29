@@ -130,7 +130,7 @@ node {
 
         sleep 60
         echo "Testing endpoint ${testAppHost}:${testAppPort}"
-        sh "nc -z $testAppHost $testAppPort"
+        sh ": </dev/tcp/$testAppHost/$testAppPort"
 }
 
                         }
