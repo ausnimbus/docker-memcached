@@ -66,6 +66,11 @@ node {
                                                 ]
                                         ],
                                         "runPolicy" : "Serial",
+                                        "resources" : [
+                                            "limits" : [
+                                                "memory" : "2Gi"
+                                            ]
+                                        ],
                                         "source" : [
                                                 "git" : [
                                                         "uri" : "https://github.com/ausnimbus/memcached-component"
@@ -131,6 +136,16 @@ node {
         sleep 60
         echo "Testing endpoint ${testAppHost}:${testAppPort}"
         sh ": </dev/tcp/$testAppHost/$testAppPort"
+}
+
+                        }
+                        stage("Stage (Memcached ${versions[i]})") {
+                                openshift.withCluster() {
+        echo "==============================="
+        echo "Tag new image into staging"
+        echo "==============================="
+
+        openshift.tag("ausnimbus-ci/memcached-component:${versions[i]}", "ausnimbus/memcached-component:${versions[i]}")
 }
 
                         }
