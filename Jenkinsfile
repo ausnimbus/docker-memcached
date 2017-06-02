@@ -4,11 +4,24 @@
 * DO NOT EDIT IT DIRECTLY.
 */
 node {
-        def versions = "1.4".split(',');
-        for (int i = 0; i < versions.length; i++) {
-                try {
-                        stage("Build (Memcached ${versions[i]})") {
-                                openshift.withCluster() {
+        def variants = "".split(',');
+        for (int v = 0; v < variants.length; v++) {
+
+                def versions = "1.4".split(',');
+                for (int i = 0; i < versions.length; i++) {
+
+                  if (variants[v] == "default") {
+                    variant = ""
+                    tag = versions[i]
+                  } else {
+                    variant = variants[v]
+                    tag = versions[i] + "-" + variant
+                  }
+
+
+                        try {
+                                stage("Build (Memcached-${tag})") {
+                                        openshift.withCluster() {
         openshift.apply([
                                 "apiVersion" : "v1",
                                 "items" : [
@@ -24,10 +37,10 @@ node {
                                                 "spec" : [
                                                         "tags" : [
                                                                 [
-                                                                        "name" : "${versions[i]}-alpine",
+                                                                        "name" : "${tag}",
                                                                         "from" : [
                                                                                 "kind" : "DockerImage",
-                                                                                "name" : "memcached:${versions[i]}-alpine",
+                                                                                "name" : "memcached:${tag}",
                                                                         ],
                                                                         "referencePolicy" : [
                                                                                 "type" : "Source"
@@ -53,7 +66,7 @@ node {
                                 "apiVersion" : "v1",
                                 "kind" : "BuildConfig",
                                 "metadata" : [
-                                        "name" : "memcached-component-${versions[i]}",
+                                        "name" : "memcached-component-${tag}",
                                         "labels" : [
                                                 "builder" : "memcached-component"
                                         ]
@@ -62,7 +75,7 @@ node {
                                         "output" : [
                                                 "to" : [
                                                         "kind" : "ImageStreamTag",
-                                                        "name" : "memcached-component:${versions[i]}"
+                                                        "name" : "memcached-component:${tag}"
                                                 ]
                                         ],
                                         "runPolicy" : "Serial",
@@ -79,27 +92,27 @@ node {
                                         ],
                                         "strategy" : [
                                                 "dockerStrategy" : [
-                                                        "dockerfilePath" : "versions/${versions[i]}/Dockerfile",
+                                                        "dockerfilePath" : "versions/${versions[i]}/${variant}/Dockerfile",
                                                         "from" : [
                                                                 "kind" : "ImageStreamTag",
-                                                                "name" : "memcached:${versions[i]}-alpine"
+                                                                "name" : "memcached:${tag}"
                                                         ]
                                                 ],
                                                 "type" : "Docker"
                                         ]
                                 ]
                         ])
-        echo "Created memcached-component:${versions[i]} objects"
+        echo "Created memcached-component:${tag} objects"
         /**
         * TODO: Replace the sleep with import-image
-        * openshift.importImage("memcached:${versions[i]}-alpine")
+        * openshift.importImage("memcached:${tag}")
         */
         sleep 60
 
         echo "==============================="
-        echo "Starting build memcached-component-${versions[i]}"
+        echo "Starting build memcached-component-${tag}"
         echo "==============================="
-        def builds = openshift.startBuild("memcached-component-${versions[i]}");
+        def builds = openshift.startBuild("memcached-component-${tag}");
 
         timeout(10) {
                 builds.untilEach(1) {
@@ -109,14 +122,14 @@ node {
         echo "Finished build ${builds.names()}"
 }
 
-                        }
-                        stage("Test (Memcached ${versions[i]})") {
-                                openshift.withCluster() {
+                                }
+                                stage("Test (Memcached-${tag})") {
+                                        openshift.withCluster() {
         echo "==============================="
         echo "Starting test application"
         echo "==============================="
 
-        def testApp = openshift.newApp("memcached-component:${versions[i]}", "-l app=memcached-ex");
+        def testApp = openshift.newApp("memcached-component:${tag}", "-l app=memcached-ex");
         echo "new-app created ${testApp.count()} objects named: ${testApp.names()}"
         testApp.describe()
 
@@ -138,28 +151,29 @@ node {
         sh ": </dev/tcp/$testAppHost/$testAppPort"
 }
 
-                        }
-                        stage("Stage (Memcached ${versions[i]})") {
-                                openshift.withCluster() {
+                                }
+                                stage("Stage (Memcached-${tag})") {
+                                        openshift.withCluster() {
         echo "==============================="
         echo "Tag new image into staging"
         echo "==============================="
 
-        openshift.tag("ausnimbus-ci/memcached-component:${versions[i]}", "ausnimbus/memcached-component:${versions[i]}")
+        openshift.tag("ausnimbus-ci/memcached-component:${tag}", "ausnimbus/memcached-component:${tag}")
 }
 
+                                }
+                        } finally {
+                                openshift.withCluster() {
+                                        echo "Deleting test resources memcached-ex"
+                                        openshift.selector("dc", [app: "memcached-ex"]).delete()
+                                        openshift.selector("bc", [app: "memcached-ex"]).delete()
+                                        openshift.selector("svc", [app: "memcached-ex"]).delete()
+                                        openshift.selector("is", [app: "memcached-ex"]).delete()
+                                        openshift.selector("pods", [app: "memcached-ex"]).delete()
+                                        openshift.selector("routes", [app: "memcached-ex"]).delete()
+                                }
                         }
-                } finally {
-                        openshift.withCluster() {
-                                echo "Deleting test resources memcached-ex"
-                                openshift.selector("dc", [app: "memcached-ex"]).delete()
-                                openshift.selector("bc", [app: "memcached-ex"]).delete()
-                                openshift.selector("svc", [app: "memcached-ex"]).delete()
-                                openshift.selector("is", [app: "memcached-ex"]).delete()
-                                openshift.selector("pods", [app: "memcached-ex"]).delete()
-                                openshift.selector("routes", [app: "memcached-ex"]).delete()
-                        }
-                }
 
+                }
         }
 }
