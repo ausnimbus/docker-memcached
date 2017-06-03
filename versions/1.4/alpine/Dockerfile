@@ -13,7 +13,8 @@ LABEL summary="Platform for running Memcached 1.4 applications" \
       io.k8s.description="Platform for running Memcached 1.4 applications" \
       io.k8s.display-name="Memcached 1.4"
 
-ENV HOME=/opt/app-root/src
+ENV USER=100 \
+    HOME=/opt/app-root/src
 
 USER 0
 
@@ -46,14 +47,14 @@ LABEL io.openshift.expose-services="11211:tcp" \
 # </template>
 # <post>
 
-# Standardize on UID 100 (alpine:3.4 does not have the shadow package)
+# Standardize on UID $USER (alpine:3.4 does not have the shadow package)
 RUN apk add shadow --no-cache --repository http://rsync.alpinelinux.org/alpine/latest-stable/community/ && \
-    usermod -o -u 100 default && \
+    usermod -o -u $USER default && \
     apk del shadow
 
 # Drop the root user and make the content of /opt/app-root owned by user default
-RUN chown -R 100:0 /opt/app-root && chmod -R ug+rwx /opt/app-root
-USER 100
+RUN chown -R $USER:0 /opt/app-root && chmod -R ug+rwx /opt/app-root
+USER $USER
 
 ENTRYPOINT ["container-entrypoint"]
 

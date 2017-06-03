@@ -3,7 +3,7 @@
 NAME="memcached"
 DISPLAY_NAME="Memcached"
 TYPE="component"
-VARIANT="alpine"
+VARIANTS="alpine"
 VERSIONS="1.4"
 
 DOCKER_PUSH=${DOCKER_PUSH:-"false"}
