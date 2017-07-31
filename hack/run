@@ -4,7 +4,7 @@ NAME="memcached"
 DISPLAY_NAME="Memcached"
 TYPE="component"
 VARIANTS="default,alpine"
-VERSIONS="1.4"
+VERSIONS="1.5"
 
 DOCKER_PUSH=${DOCKER_PUSH:-"false"}
 

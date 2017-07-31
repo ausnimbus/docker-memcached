@@ -3,28 +3,26 @@
 #
 # DO NOT EDIT IT DIRECTLY.
 #
-FROM memcached:1.4
+FROM memcached:1.5-alpine
 # <pre>
 
 MAINTAINER AusNimbus <support@ausnimbus.com.au>
 
-LABEL summary="Platform for running Memcached 1.4 applications" \
+LABEL summary="Platform for running Memcached 1.5 applications" \
       maintainer="AusNimbus <support@ausnimbus.com.au>" \
-      io.k8s.description="Platform for running Memcached 1.4 applications" \
-      io.k8s.display-name="Memcached 1.4"
+      io.k8s.description="Platform for running Memcached 1.5 applications" \
+      io.k8s.display-name="Memcached 1.5"
 
-ENV USER=999 \
+ENV USER=100 \
     HOME=/opt/app-root/src
 
 USER 0
 
-RUN apt-get update && apt-get install -y \
-      rsync nano vim && \
-      rm -rf /var/lib/apt/lists/* && \
+RUN apk --no-cache add bash rsync && \
     ln -sf /bin/bash /bin/sh && \
     mkdir -p $HOME && \
-    useradd -u 1001 -g 0 -d $HOME -s /sbin/nologin \
-      -c "Default Application User" default && \
+    adduser -S -u 1001 -G root -h $HOME -s /sbin/nologin \
+      -g "Default Application User" default && \
     chown -R 1001:0 /opt/app-root
 
 # Copy common executable utilities.
@@ -49,8 +47,10 @@ LABEL io.openshift.expose-services="11211:tcp" \
 # </template>
 # <post>
 
-# Standardize on UID $USER
-RUN usermod -o -u $USER default
+# Standardize on UID $USER (alpine:3.4 does not have the shadow package)
+RUN apk add shadow --no-cache --repository http://rsync.alpinelinux.org/alpine/latest-stable/community/ && \
+    usermod -o -u $USER default && \
+    apk del shadow
 
 # Drop the root user and make the content of /opt/app-root owned by user default
 RUN chown -R $USER:0 /opt/app-root && chmod -R ug+rwx /opt/app-root
