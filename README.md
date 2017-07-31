@@ -4,13 +4,25 @@
 
 The [AusNimbus](https://www.ausnimbus.com.au/) component for [Memcached](https://www.ausnimbus.com.au/instant-apps/memcached/).
 
-## Environment Variables
 
-- MEMCACHED_MAXMEMORY: Max memory memcached can use (default: automatically configured)
-- MEMCACHED_EXTRA_OPTIONS: Extra parameters to passed to `memcached`
+This document describes the behaviour and environment configuration when running Redis on AusNimbus.
 
-## Versions
+## Table of Contents
 
-The versions currently supported are:
+- [Runtime Environments](#runtime-environments)
+- [Environment Configuration](#environment-configuration)
 
-- 1.4
+## Runtime Environments
+
+AusNimbus supports the latest stable release for Redis.
+
+The currently supported versions are `1.5`
+
+## Environment Configuration
+
+The following environment variables are available for you to configure your Redis environment:
+
+NAME                       | Description
+---------------------------|-------------
+MEMCACHED_MAXMEMORY        | Max memory memcached can use (default: automatically configured)
+MEMCACHED_EXTRA_OPTIONS    | Extra parameters to passed to `memcached`
